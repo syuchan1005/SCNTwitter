@@ -13,10 +13,14 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Media.TextFormatting;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using CoreTweet;
 using CoreTweet.Streaming;
+using MouseKeyboardActivityMonitor;
+using MouseKeyboardActivityMonitor.WinApi;
+using KeyEventArgs = System.Windows.Forms.KeyEventArgs;
 
 namespace SCNTwitter
 {
@@ -25,6 +29,7 @@ namespace SCNTwitter
     /// </summary>
     public partial class MainWindow : Window
     {
+        private KeyboardHookListener keyboardHookListener = new KeyboardHookListener(new GlobalHooker());
         private ObservableCollection<TweetModel> messages = new ObservableCollection<TweetModel>();
         private Twitter twitter;
 
@@ -45,6 +50,38 @@ namespace SCNTwitter
                     UserIconUrl = m.Status.User.ProfileImageUrlHttps,
                     Content = m.Status
                 }));
+            keyboardHookListener.Enabled = true;
+            keyboardHookListener.KeyDown += Window_Active;
+        }
+
+        public void Window_Active(object sender, KeyEventArgs args)
+        {
+            if (!args.Control || !args.Alt) return;
+            if (args.KeyValue == 'P')
+            {
+                this.Topmost = true;
+                this.Topmost = false;
+                this.Activate();
+                listBox.Focus();
+                listBox.SelectedIndex = 0;
+            }
+            if (args.KeyValue == 'L' || args.KeyValue == 'R')
+            {
+                if (!this.IsActive)
+                {
+                    listBox.SelectedIndex = 0;
+                }
+                TweetModel tweetModel = (TweetModel)listBox.SelectedValue;
+                if (args.KeyValue == 'L')
+                {
+                    twitter.Send_Like(tweetModel.Content.Id);
+                }
+                else
+                {
+                    twitter.Send_Retweet(tweetModel.Content.Id);
+                }
+                
+            }
         }
 
         public void Button_Click(object sender, RoutedEventArgs routedEventArgs)
