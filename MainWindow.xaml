@@ -1,0 +1,81 @@
+﻿<Window x:Class="SCNTwitter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:MyTwitter"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="350" Width="525">
+    
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="ImageTextButton">
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="Foreground" Value="White" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="10,0,0,0"></Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" CornerRadius="5"  Background="#FF415360">
+                            <ContentPresenter x:Name="ButtonContentPresenter" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <ContentPresenter.Resources>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="TextAlignment" Value="Center" />
+                                    </Style>
+                                    <Style TargetType="Image">
+                                        <Setter Property="Width" Value="10" />
+                                        <Setter Property="Margin" Value="10" />
+                                    </Style>
+                                </ContentPresenter.Resources>
+                            </ContentPresenter>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    
+    <Grid>
+        <Button x:Name="button" Content="Tweet!" HorizontalAlignment="Left" Margin="432,9,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" Height="23" Margin="10,10,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="417" />
+        <ListBox x:Name="listBox" Height="271" Margin="10,38,10,0" VerticalAlignment="Top" ItemsSource="{Binding}" RenderTransformOrigin="0.5,0.5">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Image Source="{Binding UserIconUrl}"  Width="50" Height="50" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2"/>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding UserName}" Grid.Column="1" Grid.Row="0" Margin="0,0,10,0"></TextBlock>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding UserId}" Grid.Column="2" Grid.Row="0"></TextBlock>
+                        <TextBlock TextWrapping="Wrap" Text="{Binding Text}" Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="1" Width="400"></TextBlock>
+                        <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="2" Grid.RowSpan="2">
+                            <Button Style="{StaticResource ImageTextButton}" Click="Retweet_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding UserIconUrl}" />
+                                    <TextBlock>Retweet</TextBlock>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource ImageTextButton}" Click="Like_Click">
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Source="{Binding UserIconUrl}" />
+                                    <TextBlock>Like</TextBlock>
+                                </StackPanel>
+                            </Button>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</Window>
